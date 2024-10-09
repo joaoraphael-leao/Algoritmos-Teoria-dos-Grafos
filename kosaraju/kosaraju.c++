@@ -8,7 +8,7 @@
 using namespace std;
 
 class kosarajuGraph {
-    int V;
+    int size;
     vector<vector<int>> adj;
     vector<vector<int>> adjInverso;
     stack<int> pilha; // Pilha utilizada para a vista em pós-ordem
@@ -20,32 +20,13 @@ public:
     void DFSrec(vector<vector<int>>& listaAdj, int v, vector<bool>& visited);
     void DFSPostOrder(vector<vector<int>>& listaAdj, int v, vector<bool>& visited);
     void imprimirComponentesFortementeConexas();
-    void imprimirPilha();
-    void imprimirAdj();
 };
 
-void kosarajuGraph::imprimirAdj() {
-    for (int i = 0; i < adj.size(); i++) {
-        cout << i + 1 << " ";
-        for (int j = 0; j < adj[i].size(); j++) {
-            cout << adj[i][j] + 1 << " ";
-        }
-        cout << endl;
-    }
-}
-
-void kosarajuGraph::imprimirPilha() {
-    while (!pilha.empty()) {
-        cout << pilha.top() << " ";
-        pilha.pop();
-    }
-}
-
-kosarajuGraph::kosarajuGraph(int V, ofstream* arquivoDeSaida) {
-    this->V = V;
+kosarajuGraph::kosarajuGraph(int size, ofstream* arquivoDeSaida) {
+    this->size = size;
     this->arquivoDeSaida = arquivoDeSaida;
-    adj.resize(V);
-    adjInverso.resize(V);
+    adj.resize(size);
+    adjInverso.resize(size);
 }
 
 // Ao mesmo tempo que se coloca um arco v->w no grafo, coloca-se w->v no grafo inverso
@@ -65,7 +46,6 @@ void kosarajuGraph::DFSPostOrder(vector<vector<int>>& listaAdj, int v, vector<bo
     }
     pilha.push(v);
 }
-
 // dfsRec padrão
 void kosarajuGraph::DFSrec(vector<vector<int>>& listaAdj, int v, vector<bool>& visited) {
     visited[v] = true;
@@ -81,13 +61,12 @@ void kosarajuGraph::DFSrec(vector<vector<int>>& listaAdj, int v, vector<bool>& v
         }
     }
 }
-
 // Função para imprimir as componentes fortemente conexas
 void kosarajuGraph::imprimirComponentesFortementeConexas() {
     int numVertices = adj.size();
     vector<bool> visited(numVertices, false);
     // Passo 1: Preencher a pilha com a ordem de finalização dos vértices
-    for (int i = 0; i < V; i++) {
+    for (int i = 0; i < size; i++) {
         if (!visited[i]) {
             DFSPostOrder(adjInverso, i, visited);
         }
@@ -144,5 +123,10 @@ int main(int argc, char* argv[]) {
     }
     g.imprimirComponentesFortementeConexas();
 
+    arquivoDeEntrada.close();
+    if(arquivoDeSaida.is_open())
+    {
+        arquivoDeSaida.close();
+    }
     return 0;
 }
