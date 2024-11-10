@@ -11,7 +11,7 @@ using namespace std;
 
 const char TEXTO_DE_AJUDA[] =
     "Uso: <nome_do_programa> [opções] <arquivo>\n"
-    "Este programa calcula o caminho mínimo em um grafo usando o algoritmo de Dijkstra\n\n"
+    "Este programa calcula a árvore geradora mínima de um grafo usando o algoritmo de Prim.\n\n"
     "Opções:\n"
     "  -o <arquivo>: especifica o arquivo de saída\n"
     "  -f <arquivo>: especifica o arquivo de entrada que contém o grafo\n"
