@@ -13,11 +13,11 @@ const char TEXTO_DE_AJUDA[] =
     "Uso: <nome_do_programa> [opções] <arquivo>\n"
     "Este programa calcula a árvore geradora mínima de um grafo usando o algoritmo de Prim.\n\n"
     "Opções:\n"
-    "  -o <arquivo>: especifica o arquivo de saída\n"
-    "  -f <arquivo>: especifica o arquivo de entrada que contém o grafo\n"
-    "  -i <vértice>: especifica o vértice inicial\n"
+    "  -o <arquivo>:  redireciona a saida para o ‘‘arquivo’’\n"
+    "  -f <arquivo>:  indica o ‘‘arquivo’’ que contém o grafo de entrada\n"
+    "  -i : vértice inicial\n"
     "  -s: mostra a solução\n"
-    "  -h: exibe esta ajuda\n";
+    "  -h: mostra o help\n";
 
 int prim(vector<vector<pair<int, int>>> &lista_adjacencia, vector<int> &pai, int fonte, int i)
 {
