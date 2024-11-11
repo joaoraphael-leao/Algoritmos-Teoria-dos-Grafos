@@ -51,7 +51,7 @@ void bellmanFord (vector<aresta_grafo> &arestas, vector<int> &distancia, int n, 
 
         if (distancia[u] != numeric_limits<int>::max() && distancia[u] + w < distancia[v]) 
         {
-            cerr << "The graph has a negative weight cycle!" << endl;
+            cerr << "Esse grafo possui um ciclo de tamanho negativo!" << endl;
             return;
         }
     }
