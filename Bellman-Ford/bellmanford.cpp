@@ -136,13 +136,13 @@ int main(int argc, char *argv[])
 
     if (fluxo_saida) 
     {
-        ofstream output_file(nomearquivo_saida, ios::out);
+        ofstream arquivo_saida(nomearquivo_saida, ios::out);
 
-        if (output_file.is_open()) 
+        if (arquivo_saida.is_open()) 
         {
             for (size_t i = 0; i < distancia.size(); ++i) 
             {
-                output_file << i + 1 << ":" << distancia[i] << " ";
+                arquivo_saida << i + 1 << ":" << distancia[i] << " ";
             }
         } 
         else 
