@@ -1,8 +1,8 @@
 #include <iostream>
-#include <unistd.h>
 #include <fstream>
 #include <vector>
 #include <limits>
+#include <unistd.h>
 using namespace std;
 
 const char TEXTO_DE_AJUDA[] =
@@ -14,44 +14,30 @@ const char TEXTO_DE_AJUDA[] =
     "  -i <vértice>: especifica o vértice inicial\n"
     "  -h: exibe esta ajuda\n";
 
+struct aresta_grafo {
+    int u, v, w;
+};
 
-typedef struct aresta_grafo 
-{
-    int u;
-    int v;
-    int w;
-} aresta_grafo;
-
-void bellmanFord (vector<aresta_grafo> &arestas, vector<int> &distancia, int n, int inicial) 
-{
-    int i, u, v, w;
-
+void bellmanFord(const vector<aresta_grafo>& arestas, vector<int>& distancia, int n, int inicial) {
     distancia[inicial] = 0;
+    bool atualizou = false;
 
-    for (i = 0; i < n; i++) 
-    {
-        for (const auto &aresta : arestas) 
-        {
-            u = aresta.u;
-            v = aresta.v;
-            w = aresta.w;
-
-            if (distancia[u] != numeric_limits<int>::max() && distancia[u] + w < distancia[v])
-            {
-                distancia[v] = distancia[u] + w;
+    for (int i = 0; i < n - 1; i++) {
+        atualizou = false;
+        for (const auto& aresta_grafo : arestas) {
+            if (distancia[aresta_grafo.u] != numeric_limits<int>::max() && 
+                distancia[aresta_grafo.u] + aresta_grafo.w < distancia[aresta_grafo.v]) {
+                distancia[aresta_grafo.v] = distancia[aresta_grafo.u] + aresta_grafo.w;
+                atualizou = true;
             }
         }
+        if (!atualizou) break;
     }
 
-    for (const auto &aresta : arestas) 
-    {
-        u = aresta.u;
-        v = aresta.v;
-        w = aresta.w;
-
-        if (distancia[u] != numeric_limits<int>::max() && distancia[u] + w < distancia[v]) 
-        {
-            cerr << "Esse grafo possui um ciclo de tamanho negativo!" << endl;
+    for (const auto& aresta_grafo : arestas) {
+        if (distancia[aresta_grafo.u] != numeric_limits<int>::max() && 
+            distancia[aresta_grafo.u] + aresta_grafo.w < distancia[aresta_grafo.v]) {
+            cerr << "Esse grafo possui um ciclo de peso negativo!" << endl;
             return;
         }
     }
@@ -59,26 +45,17 @@ void bellmanFord (vector<aresta_grafo> &arestas, vector<int> &distancia, int n, 
 
 int main(int argc, char *argv[]) 
 {
-    string nomearquivo_entrada;
-    string nomearquivo_saida;
+    string nomearquivo_entrada, nomearquivo_saida;
+    int inicial = 0;
     int option;
-    int inicial;
-    int fluxo_saida;
-    int n, m, u, v, w;
 
-    inicial = 0; 
-    fluxo_saida = 0;
-
-    while ((option = getopt(argc, argv, "ho:i:f:")) != -1) 
-    {
-        switch (option) 
-        {
+    while ((option = getopt(argc, argv, "ho:i:f:")) != -1) {
+        switch (option) {
             case 'h':
                 cout << TEXTO_DE_AJUDA;
                 return 0;
             case 'o':
                 nomearquivo_saida = optarg;
-                fluxo_saida = 1;
                 break;
             case 'f':
                 nomearquivo_entrada = optarg;
@@ -87,72 +64,59 @@ int main(int argc, char *argv[])
                 inicial = stoi(optarg) - 1;
                 break;
             default:
-                cerr << "Unknown flag! Use -h for help instead." << endl;
+                cerr << "Opção desconhecida! Use -h para ajuda." << endl;
                 return 1;
         }
     }
 
     ifstream arquivo_entrada(nomearquivo_entrada);
-
-    if (!arquivo_entrada.is_open()) 
-    {
-        cerr << "Unable to open input file" << endl;
-
+    if (!arquivo_entrada.is_open()) {
+        cerr << "Não foi possível abrir o arquivo de entrada" << endl;
         return 1;
     }
 
-    bool grafo_direcionado = false;
-
+    int n, m;
     arquivo_entrada >> n >> m;
+    vector<aresta_grafo> arestas(m);
 
-    if(m < 0)
-    {
-        grafo_direcionado = true;
-        m = (-1 * m);
-    }
-
-    vector<aresta_grafo> arestas;
-
-    for (int i = 0; i < m; i++) 
-    {
+    // Ler arestas do grafo
+    for (int i = 0; i < m; i++) {
+        int u, v, w;
         arquivo_entrada >> u >> v >> w;
-
-        if(grafo_direcionado) arestas.push_back({u - 1, v - 1, w});
-        else
-        {
-            arestas.push_back({u - 1, v - 1, w});
-            arestas.push_back({v - 1, u - 1, w});
-        }
+        arestas[i] = {u - 1, v - 1, w};
     }
 
     vector<int> distancia(n, numeric_limits<int>::max());
-
     bellmanFord(arestas, distancia, n, inicial);
 
-    for (size_t i = 0; i < distancia.size(); ++i) 
-    {
-        cout << i + 1 << ":" << distancia[i] << " ";
-    }
-
-    if (fluxo_saida) 
-    {
-        ofstream arquivo_saida(nomearquivo_saida, ios::out);
-
-        if (arquivo_saida.is_open()) 
-        {
-            for (size_t i = 0; i < distancia.size(); ++i) 
-            {
-                arquivo_saida << i + 1 << ":" << distancia[i] << " ";
+    // Saída formatada
+    if (nomearquivo_saida.empty()) {
+        for (int i = 0; i < n; i++) {
+            if (i > 0) cout << ", ";
+            cout << (i + 1) << ":";
+            if (distancia[i] == numeric_limits<int>::max())
+                cout << "infinito";
+            else
+                cout << distancia[i];
+        }
+        cout << endl;
+    } else {
+        ofstream arquivo_saida(nomearquivo_saida);
+        if (arquivo_saida.is_open()) {
+            for (int i = 0; i < n; i++) {
+                if (i > 0) arquivo_saida << ", ";
+                arquivo_saida << (i + 1) << ":";
+                if (distancia[i] == numeric_limits<int>::max())
+                    arquivo_saida << "infinito";
+                else
+                    arquivo_saida << distancia[i];
             }
-        } 
-        else 
-        {
-            cerr << "Unable to open output file" << endl;
+            arquivo_saida << endl;
+        } else {
+            cerr << "Não foi possível abrir o arquivo de saída" << endl;
             return 1;
         }
     }
 
-    arquivo_entrada.close();
-    
     return 0;
 }
