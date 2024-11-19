@@ -2,8 +2,8 @@
 
 # Binários
 kosaraju=./kosaraju.bin  # Caminho para o executável do algoritmo de Kosaraju
-#prim=./prim.bin          # Caminho para o executável do algoritmo de Prim
-#kruskal=./kruskal.bin    # Caminho para o executável do algoritmo de Kruskal
+prim=./prim.bin          # Caminho para o executável do algoritmo de Prim
+kruskal=./kruskal.bin    # Caminho para o executável do algoritmo de Kruskal
 dijkstra=./dijkstra.bin  # Caminho para o executável do algoritmo de Dijkstra
 
 echo "Testando algoritmo de Kosaraju"

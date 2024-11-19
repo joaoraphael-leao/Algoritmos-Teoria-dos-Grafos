@@ -79,7 +79,6 @@ int main(int argc, char *argv[])
     arquivo_entrada >> n >> m;
     vector<aresta_grafo> arestas(m);
 
-    // Ler arestas do grafo
     for (int i = 0; i < m; i++) {
         int u, v, w;
         arquivo_entrada >> u >> v >> w;
@@ -89,7 +88,6 @@ int main(int argc, char *argv[])
     vector<int> distancia(n, numeric_limits<int>::max());
     bellmanFord(arestas, distancia, n, inicial);
 
-    // Saída formatada
     if (nomearquivo_saida.empty()) {
         for (int i = 0; i < n; i++) {
             if (i > 0) cout << ", ";
